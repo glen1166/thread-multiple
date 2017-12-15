@@ -5,37 +5,21 @@ namespace MultiThreading
 {
     class Program
     {
-       public static void CallToChildThread() {
-         
-         try {
-            Console.WriteLine("Child thread starts");
-            
-            // do some work, like counting to 10
-            for (int counter = 0; counter <= 10; counter++) {
-               Thread.Sleep(500);
-               Console.WriteLine(counter);
-            }
-            
-            Console.WriteLine("Child Thread Completed");
-         } catch (ThreadAbortException e) {
-            Console.WriteLine("Thread Abort Exception" + "/n" + e.ToString());
-         } finally {
-            Console.WriteLine("Couldn't catch the Thread Exception");
-         }
-      }
-      
-      static void Main(string[] args) {
-         ThreadStart childref = new ThreadStart(CallToChildThread);
-         Console.WriteLine("In Main: Creating the Child thread");
-         Thread childThread = new Thread(childref);
-         childThread.Start();
-         
-         //stop the main thread for some time
-         Thread.Sleep(2000);
-         
-         //now abort the child
-         Console.WriteLine("In Main: Aborting the Child thread");
-         Console.Read();
-      }
+        public static void Main() 
+        {
+            // Queue the task.
+            ThreadPool.QueueUserWorkItem(ThreadProc);
+            Console.WriteLine("Main thread does some work, then sleeps.");
+            Thread.Sleep(1000);
+
+            Console.WriteLine("Main thread exits.");
+        }
+
+        // This thread procedure performs the task.
+        static void ThreadProc(Object stateInfo) 
+        {
+            // No state object was passed to QueueUserWorkItem, so stateInfo is null.
+            Console.WriteLine("Hello from the thread pool.");
+        }
     }
 }
